@@ -37,7 +37,7 @@ class cFuncDiv:
         
         try:
             return {
-                "set" : "scoreboard players set Acc s1asm {}".format(xArgInt % x16IntLimit),
+                "set" : "scoreboard players set Reg s1asm {}".format(xArgInt % x16IntLimit),
                 "add" : "scoreboard players operation Acc s1asm += Reg s1asm\nscoreboard players operation Acc s1asm %= IntLimit s1asm",
                 "sub" : "scoreboard players operation Acc s1asm -= Reg s1asm\nscoreboard players operation Acc s1asm %= IntLimit s1asm",
                 "shg" : "scoreboard players operation Acc s1asm *= 2 s1asm  \nscoreboard players operation Acc s1asm %= IntLimit s1asm",
