@@ -213,7 +213,7 @@ execute if score Acc s1asm matches 30 run data modify storage minecraft:s1asm St
 execute if score Acc s1asm matches 31 run data modify storage minecraft:s1asm StdOut append value ""                 
 execute if score Acc s1asm matches 32 run data modify storage minecraft:s1asm StdOut append value " "                 
 execute if score Acc s1asm matches 33 run data modify storage minecraft:s1asm StdOut append value "!"                 
-execute if score Acc s1asm matches 34 run data modify storage minecraft:s1asm StdOut append value "\""                 
+execute if score Acc s1asm matches 34 run data modify storage minecraft:s1asm StdOut append value "\\"                 
 execute if score Acc s1asm matches 35 run data modify storage minecraft:s1asm StdOut append value "#"                 
 execute if score Acc s1asm matches 36 run data modify storage minecraft:s1asm StdOut append value "$"                 
 execute if score Acc s1asm matches 37 run data modify storage minecraft:s1asm StdOut append value "%"                 
