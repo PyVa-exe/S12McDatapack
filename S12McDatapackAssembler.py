@@ -87,8 +87,10 @@ class cFuncDiv:
                 "jma" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
                         (f"execute unless score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
 
-#jmG attr - goto attr if Acc > Reg (jmG for jump great)
-#jmL attr - goto atrr if Acc < Reg (jmL for jump less)
+                "jmg" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
+                        (f"execute unless score Acc s1asm > Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
+                "jml" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
+                        (f"execute unless score Acc s1asm < Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
 
                 "jms" : f"function {self.xBaseName}:{xArgLab}".format(),
                 "ret" : "",
@@ -355,7 +357,7 @@ execute unless score Acc s1asm matches 0..16777215 unless score Acc s1asm matche
 scoreboard players operation Acc s1asm = Temp s1asm
         """)
 
-    with open(os.path.join(xTargetPathAbs, "and.mcfunction"), "w") as xFileHandle:
+    with open(os.path.join(xTargetPathAbs, "or.mcfunction"), "w") as xFileHandle:
         xFileHandle.write("""
 scoreboard players set Temp s1asm 0
 execute unless score Acc s1asm matches ..-1 unless score Reg s1asm matches ..-1 run scoreboard players set Temp s1asm -2147483648
