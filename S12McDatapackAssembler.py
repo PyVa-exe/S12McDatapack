@@ -62,7 +62,7 @@ class cFuncDiv:
                         "execute store result score Acc s1asm run data get storage minecraft:s1asm Mem[0]\n" +\
                         "execute unless score MemOffset s1asm matches 0 run function {}:memptrzero".format(self.xBaseName),
 
-                "lpa" : "execute store result score MemTarget s1asm run data get storage minecraft:s1asm Mem[{}]\n".format(xArgInt) +\
+                "lpr" : "execute store result score MemTarget s1asm run data get storage minecraft:s1asm Mem[{}]\n".format(xArgInt) +\
                         "execute unless score MemTarget s1asm matches 0 run function {}:memptrset\n".format(self.xBaseName) +\
                         "execute store result score Reg s1asm run data get storage minecraft:s1asm Mem[0]\n" +\
                         "execute unless score MemOffset s1asm matches 0 run function {}:memptrzero".format(self.xBaseName),
@@ -213,7 +213,7 @@ execute if score Acc s1asm matches 30 run data modify storage minecraft:s1asm St
 execute if score Acc s1asm matches 31 run data modify storage minecraft:s1asm StdOut append value ""                 
 execute if score Acc s1asm matches 32 run data modify storage minecraft:s1asm StdOut append value " "                 
 execute if score Acc s1asm matches 33 run data modify storage minecraft:s1asm StdOut append value "!"                 
-execute if score Acc s1asm matches 34 run data modify storage minecraft:s1asm StdOut append value "\\"                 
+execute if score Acc s1asm matches 34 run data modify storage minecraft:s1asm StdOut append value "\\\\"                 
 execute if score Acc s1asm matches 35 run data modify storage minecraft:s1asm StdOut append value "#"                 
 execute if score Acc s1asm matches 36 run data modify storage minecraft:s1asm StdOut append value "$"                 
 execute if score Acc s1asm matches 37 run data modify storage minecraft:s1asm StdOut append value "%"                 
