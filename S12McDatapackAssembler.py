@@ -47,8 +47,8 @@ class cFuncDiv:
                 "shg" : "scoreboard players operation Acc s1asm *= 2 s1asm  \nscoreboard players operation Acc s1asm %= IntLimit s1asm",
                 "shs" : "scoreboard players operation Acc s1asm /= 2 s1asm  \nscoreboard players operation Acc s1asm %= IntLimit s1asm",
                 
-#lor none - Acc = Acc (logical or) Reg
-#and none - Acc = Acc (logical and) Reg
+                "lor" : f"function {self.xBaseName}:or".format(),
+                "and" : f"function {self.xBaseName}:and".format(),
 #xor none - Acc = Acc (logical xor) Reg
 #not none - Acc = Acc (logical not)
                 
