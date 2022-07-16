@@ -32,6 +32,10 @@ class cFuncDiv:
         return [self.InstTranslate(xContentIter, xLabMapper) for xContentIter in self.xContent]
 
     def InstTranslate(self, xInst, xLabMapper):
+        #check if label is mapped
+        if (xInst.xArg is not None) and not (xInst.xArg.isdigit()) and xInst.xArg not in xLabMapper:
+            Error("Unmapped label: {}".format(xInst.xArg))
+                
         xArgInt =              int(xInst.xArg) if (xInst.xArg is not None) and     (xInst.xArg.isdigit()) else 0
         xArgLab = xLabMapper[xInst.xArg].xName if (xInst.xArg is not None) and not (xInst.xArg.isdigit()) else ""
         
@@ -156,7 +160,7 @@ schedule function {xBaseName}:div0 1t
         xFileHandle.write(f"""
 scoreboard players add MemOffset s1asm 1
 data modify storage minecraft:s1asm Mem append from storage s1asm Mem[0]
-data remove storage minecraft:s1asm mem[0]
+data remove storage minecraft:s1asm Mem[0]
 execute unless score MemTarget s1asm = MemOffset s1asm run function {xBaseName}:memptrset
         """.format())
         
@@ -165,7 +169,7 @@ execute unless score MemTarget s1asm = MemOffset s1asm run function {xBaseName}:
         xFileHandle.write(f"""
 scoreboard players remove MemOffset s1asm 1
 data modify storage minecraft:s1asm Mem prepend from storage s1asm Mem[-1]
-data remove storage minecraft:s1asm mem[-1]
+data remove storage minecraft:s1asm Mem[-1]
 execute unless score MemOffset s1asm matches 0 run function {xBaseName}:memptrzero
         """.format())
 
