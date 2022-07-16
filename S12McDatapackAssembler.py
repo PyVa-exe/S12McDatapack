@@ -95,8 +95,8 @@ class cFuncDiv:
 
 
                 
-                "pha" : "data modify storage s1asm Mem append value 0\nexecute store result storage s1asm Mem[-1] int 1 run scoreboard players get Acc s1asm", 
-                "pla" : "execute store result score Acc s1asm run data get storage s1asm Mem[-1]\ndata remove storage s1asm Mem[-1]",
+                "pha" : "data modify storage s1asm Stack append value 0\nexecute store result storage s1asm Stack[-1] int 1 run scoreboard players get Acc s1asm", 
+                "pla" : "execute store result score Acc s1asm run data get storage s1asm Stack[-1]\ndata remove storage s1asm Stack[-1]",
 
 
                 "brk" : "",
