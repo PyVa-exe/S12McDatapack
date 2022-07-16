@@ -58,7 +58,7 @@ class cFuncDiv:
                 "srd" : "execute store result storage minecraft:s1asm Mem[{}] int 1 run scoreboard players get Reg s1asm".format(xArgInt),
 
                 "lpa" : "execute store result score MemTarget s1asm run data get storage minecraft:s1asm Mem[{}]\n".format(xArgInt) +\
-                        "execute unless score MemTarget s1asm matches 0 run function {}:memptrset".format(self.xBaseName) +\
+                        "execute unless score MemTarget s1asm matches 0 run function {}:memptrset\n".format(self.xBaseName) +\
                         "execute store result score Acc s1asm run data get storage minecraft:s1asm Mem[0]\n" +\
                         "execute unless score MemOffset s1asm matches 0 run function {}:memptrzero".format(self.xBaseName),
 
@@ -177,7 +177,7 @@ execute unless score MemOffset s1asm matches 0 run function {xBaseName}:memptrze
     #outputs *arg as ascii
     with open(os.path.join(xTargetPathAbs, "putstr.mcfunction"), "w") as xFileHandle:
         xFileHandle.write("""
-execute if score Acc s1asm matches 10 run tellraw @a {"nbt":"StdOut", "storage":"s1asm"}
+execute if score Acc s1asm matches 10 run tellraw @a {"nbt":"StdOut", "storage":"s1asm", "interpret":true}
 execute if score Acc s1asm matches 10 run data modify storage minecraft:s1asm StdOut set value []
 
 execute if score Acc s1asm matches 0 run data modify storage minecraft:s1asm StdOut append value "" 
