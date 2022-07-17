@@ -30,7 +30,11 @@ class cFuncDiv:
         
     def Translate(self, xLabMapper):
         xCore = [self.InstTranslate(xContentIter, xLabMapper) for xContentIter in self.xContent]
-        return xCore
+
+        if "--debug" in sys.argv:
+            return [f"say Start {self.xName}".format()] + xCore + [f"say End {self.xName}".format()]
+        else:
+            return xCore
 
     def InstTranslate(self, xInst, xLabMapper):
         #check if label is mapped
@@ -83,15 +87,33 @@ class cFuncDiv:
 
                 "lab" : f"function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "",
                 "got" : f"function {self.xBaseName}:{xArgLab}".format(),
-                "jm0" : f"execute if score Acc s1asm matches 0 run function {self.xBaseName}:{xArgLab}\n".format() +\
-                        (f"execute unless score Acc s1asm matches 0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
-                "jma" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
-                        (f"execute unless score Acc s1asm = Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
+                #acc = 0
+                "jm0" : "execute if score Acc s1asm matches 0 run data modify storage s1asm Flow append value {1:1}" +\
+                        "execute unless score Acc s1asm matches 0 run data modify storage s1asm Flow append value {0:0}" +\
+                         f"execute if data storage minecraft:s1asm Flow[-1].1 run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute if data storage minecraft:s1asm Flow[-1].0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "") +\
+                        "data remove storage minecraft:s1asm Flow[-1]",
 
-                "jmg" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
-                        (f"execute unless score Acc s1asm > Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
-                "jml" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
-                        (f"execute unless score Acc s1asm < Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
+                #acc = reg
+                "jma" : "execute if score Acc s1asm = Reg s1asm run data modify storage s1asm Flow append value {1:1}" +\
+                        "execute unless score Acc s1asm matches = Reg s1asm run data modify storage s1asm Flow append value {0:0}" +\
+                         f"execute if data storage minecraft:s1asm Flow[-1].1 run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute if data storage minecraft:s1asm Flow[-1].0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "") +\
+                        "data remove storage minecraft:s1asm Flow[-1]",
+
+                #acc > reg
+                "jmg" : "execute if score Acc s1asm > Reg s1asm run data modify storage s1asm Flow append value {1:1}" +\
+                        "execute unless score Acc s1asm matches > Reg s1asm run data modify storage s1asm Flow append value {0:0}" +\
+                         f"execute if data storage minecraft:s1asm Flow[-1].1 run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute if data storage minecraft:s1asm Flow[-1].0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "") +\
+                        "data remove storage minecraft:s1asm Flow[-1]",
+
+                #acc < reg
+                "jml" : "execute if score Acc s1asm matches < Reg s1asm run data modify storage s1asm Flow append value {1:1}" +\
+                        "execute unless score Acc s1asm matches < Reg s1asm run data modify storage s1asm Flow append value {0:0}" +\
+                         f"execute if data storage minecraft:s1asm Flow[-1].1 run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute if data storage minecraft:s1asm Flow[-1].0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "") +\
+                        "data remove storage minecraft:s1asm Flow[-1]",
 
                 #push 0 as placeholder
                 "jms" : f"data modify storage s1asm Stack append value 0\nfunction {self.xBaseName}:{xArgLab}".format(),
@@ -155,6 +177,7 @@ scoreboard players set MemTarget s1asm 0
 scoreboard players set Temp s1asm 0
 
 data modify storage minecraft:s1asm Mem set value {str([0] * x16IntLimit)}
+data modify storage minecraft:s1asm Flow set value []
 data modify storage minecraft:s1asm Stack set value []
 data modify storage minecraft:s1asm StdOut set value []
 schedule function {xBaseName}:div0 1t
@@ -436,7 +459,10 @@ scoreboard players operation Acc s1asm = Temp s1asm
         with open(os.path.join(xTargetPathAbs, xDiv.xFileName), "w") as xFileHandle:
             xFileHandle.write("\n".join(xDiv.Translate(xLabMapper)))
 
-        
+    #print mapper
+    for xLab in xLabMapper:
+        print(f"{xLab} : {xLabMapper[xLab].xName}".format())
+    
     
 if __name__ == '__main__':
     if "--help" in sys.argv:
