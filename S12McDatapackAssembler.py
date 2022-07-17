@@ -23,13 +23,14 @@ class cFuncDiv:
         self.xContent       = xContent
         #self.xTargetPath    = xTargetPath
         self.xId            = next(xIdGen)
-        self.xName          = FuncId2Name(self.xId)
+        self.xName          = FuncId2Name(self.xId)        
         self.xFileName      = self.xName + ".mcfunction"
         
         self.xBaseName = xBaseName
         
     def Translate(self, xLabMapper):
-        return [self.InstTranslate(xContentIter, xLabMapper) for xContentIter in self.xContent]
+        xCore = [self.InstTranslate(xContentIter, xLabMapper) for xContentIter in self.xContent]
+        return xCore
 
     def InstTranslate(self, xInst, xLabMapper):
         #check if label is mapped
@@ -80,20 +81,21 @@ class cFuncDiv:
                 "out" : 'tellraw @a {{"storage":"minecraft:s1asm","nbt":"Mem[{}]"}}'.format(xArgInt),
 #inp attr - inputs  mem at attr
 
-                "lab" : f"schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else "",
-                "got" : f"schedule function {self.xBaseName}:{xArgLab} 1t".format(),
-                "jm0" : f"execute if score Acc s1asm matches 0 run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
-                        (f"execute unless score Acc s1asm matches 0 run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
-                "jma" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
-                        (f"execute unless score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
+                "lab" : f"function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else "",
+                "got" : f"function {self.xBaseName}:{xArgLab}".format(),
+                "jm0" : f"execute if score Acc s1asm matches 0 run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute unless score Acc s1asm matches 0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
+                "jma" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute unless score Acc s1asm = Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
 
-                "jmg" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
-                        (f"execute unless score Acc s1asm > Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
-                "jml" : f"execute if score Acc s1asm = Reg s1asm run schedule function {self.xBaseName}:{xArgLab} 1t\n".format() +\
-                        (f"execute unless score Acc s1asm < Reg s1asm run schedule function {self.xBaseName}:{FuncId2Name(self.xId + 1)} 1t".format() if xIdGenIndex > self.xId else ""),
+                "jmg" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute unless score Acc s1asm > Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
+                "jml" : f"execute if score Acc s1asm = Reg s1asm run function {self.xBaseName}:{xArgLab}\n".format() +\
+                        (f"execute unless score Acc s1asm < Reg s1asm run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}".format() if xIdGenIndex > self.xId else ""),
 
-                "jms" : f"function {self.xBaseName}:{xArgLab}".format(),
-                "ret" : "",
+                #push 0 as placeholder
+                "jms" : f"data modify storage s1asm Stack append value 0\nfunction {self.xBaseName}:{xArgLab}".format(),
+                "ret" : "data remove storage s1asm Stack[-1]",
 
 
                 
@@ -146,7 +148,7 @@ scoreboard players set Reg s1asm 0
 scoreboard players set 2 s1asm 2
 scoreboard players set IntLimit s1asm {x16IntLimit}
 scoreboard players set 2^8 s1asm {2**8}
-scoreboard players set -2^0 bitwise_ops -1
+scoreboard players set -2^0 s1asm -1
 
 scoreboard players set MemOffset s1asm 0
 scoreboard players set MemTarget s1asm 0
@@ -433,6 +435,7 @@ scoreboard players operation Acc s1asm = Temp s1asm
     for xDiv in xDivBuffer:
         with open(os.path.join(xTargetPathAbs, xDiv.xFileName), "w") as xFileHandle:
             xFileHandle.write("\n".join(xDiv.Translate(xLabMapper)))
+
         
     
 if __name__ == '__main__':
