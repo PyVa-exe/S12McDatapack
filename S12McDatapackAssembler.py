@@ -109,7 +109,7 @@ class cFuncDiv:
                         "data remove storage minecraft:s1asm Flow[-1]",
 
                 #acc < reg
-                "jml" : "execute if score Acc s1asm matches < Reg s1asm run data modify storage s1asm Flow append value {1:1}\n" +\
+                "jml" : "execute if score Acc s1asm < Reg s1asm run data modify storage s1asm Flow append value {1:1}\n" +\
                         "execute unless score Acc s1asm < Reg s1asm run data modify storage s1asm Flow append value {0:0}\n" +\
                          f"execute if data storage minecraft:s1asm Flow[-1].1 run function {self.xBaseName}:{xArgLab}\n".format() +\
                         (f"execute if data storage minecraft:s1asm Flow[-1].0 run function {self.xBaseName}:{FuncId2Name(self.xId + 1)}\n".format() if xIdGenIndex > self.xId else "") +\
