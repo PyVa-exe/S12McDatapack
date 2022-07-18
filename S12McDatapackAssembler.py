@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, re
 
 xIdGenIndex = 0
 def IdGen():
@@ -126,7 +126,7 @@ class cFuncDiv:
                 "putstr" : f"function {self.xBaseName}:putstr".format(),
                 
                 
-                "/" : xInst.xArg    \
+                "/" : re.sub("{[^{}]*}", lambda x: xLabMapper[x.group(0)[1:-1]].xName if x.group(0)[1:-1] in xLabMapper else x.group(0), xInst.xArg)    \
                 .replace("!", " ")  \
                 .replace("{name}", self.xBaseName) \
                 .replace("{div}" , self.xName)    +\
@@ -481,8 +481,10 @@ direct mc commands can be inserted like this:
     / say!hello!world
     
 the commas are required by s1asm syntax rules
-current name and division can be referenced like this:
+current name and division/label can be referenced like this:
     / schedule!function!{name}:{div}
+    / schedule!function!{name}:{<myLabel>}
+    
 
         """)
         sys.exit(0)
