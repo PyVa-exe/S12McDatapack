@@ -16,7 +16,6 @@ def Error(msg):
 x16IntLimit = 65535
 FuncId2Name = lambda x: "div{}".format(x)
 
-
 #holds one function 'file'
 class cFuncDiv:
     def __init__(self, xContent, xBaseName):
@@ -127,7 +126,11 @@ class cFuncDiv:
                 "putstr" : f"function {self.xBaseName}:putstr".format(),
                 
                 
-                "/" : xInst.xArg.replace(".", " ") + "\n" if xInst.xOp.lower() == "/" else "",
+                "/" : xInst.xArg    \
+                .replace("!", " ")  \
+                .replace("{name}", self.xBaseName) \
+                .replace("{div}" , self.xName)    +\
+                     "\n" if xInst.xOp.lower() == "/" else "",
                 
             }[xInst.xOp.lower()]
 
@@ -426,6 +429,10 @@ scoreboard players operation Temp s1asm *= -2^0 s1asm
 scoreboard players remove Temp s1asm 1        
 scoreboard players operation Acc s1asm = Temp s1asm
         """)
+
+    with open(os.path.join(xTargetPathAbs, "exit.mcfunction"), "w") as xFileHandle:
+        xFileHandle.write("")
+
     
     #this is probably the worst parser i've ever written
     #don't ask how it works, cuz' i don't know either
@@ -471,12 +478,12 @@ if __name__ == '__main__':
 --output  output file
 
 direct mc commands can be inserted like this:
-    / my.command
+    / say!hello!world
     
-for ex.
-    / say.hello.world
-    
-the dots are required by s1asm syntax rules
+the commas are required by s1asm syntax rules
+current name and division can be referenced like this:
+    / schedule!function!{name}:{div}
+
         """)
         sys.exit(0)
     
