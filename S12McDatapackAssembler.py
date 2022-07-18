@@ -37,12 +37,8 @@ class cFuncDiv:
             return xCore
 
     def InstTranslate(self, xInst, xLabMapper):
-        #check if label is mapped
-        if (xInst.xArg is not None) and not (xInst.xArg.isdigit()) and xInst.xArg not in xLabMapper:
-            Error("Unmapped label: {}".format(xInst.xArg))
-                
         xArgInt =              int(xInst.xArg) if (xInst.xArg is not None) and     (xInst.xArg.isdigit()) else 0
-        xArgLab = xLabMapper[xInst.xArg].xName if (xInst.xArg is not None) and not (xInst.xArg.isdigit()) else ""
+        xArgLab = xLabMapper[xInst.xArg].xName if (xInst.xArg is not None) and (xInst.xArg in xLabMapper) else ""
         
         try:
             return {
@@ -130,10 +126,13 @@ class cFuncDiv:
 
                 "putstr" : f"function {self.xBaseName}:putstr".format(),
                 
+                
+                "/" : xInst.xArg.replace(".", " ") + "\n" if xInst.xOp.lower() == "/" else "",
+                
             }[xInst.xOp.lower()]
 
         except KeyError:
-           Error(f"Invaild instruction: '{xInst.xOp.lower()}'".format())
+           Error(f"Invaild instruction: '{str(xInst)}'".format())
 
 
 
@@ -470,6 +469,14 @@ if __name__ == '__main__':
 --help    print help
 --input   input file
 --output  output file
+
+direct mc commands can be inserted like this:
+    / my.command
+    
+for ex.
+    / say.hello.world
+    
+the dots are required by s1asm syntax rules
         """)
         sys.exit(0)
     
